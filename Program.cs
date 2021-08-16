@@ -32,19 +32,12 @@ namespace Excel2DB
             int cols = excelRange.Columns.Count;
 
             //Создание и удаление файла (чисто для теста)
-            if (File.Exists(pathcsv))
+            if (!File.Exists(pathcsv))
             {
-                File.Delete(pathcsv);
                 string label = "Код" + del + "Наименование" + del + "Подразделение" + del + "Владелец процесса" + del + Environment.NewLine;
                 File.WriteAllText(pathcsv, label, Encoding.GetEncoding(1251));
 
                 log("Создан файл " + pathcsv);
-            }
-            else
-            {
-                string label = "Код" + del + "Наименование" + del + "Подразделение" + del + "Владелец процесса" + del + Environment.NewLine;
-                File.WriteAllText(pathcsv, label, Encoding.GetEncoding(1251));
-                Console.WriteLine("Создан файл " + pathcsv);
             }
 
             log("Начало чтения файла " + path);
@@ -52,32 +45,45 @@ namespace Excel2DB
             //Через upstring идет сбор строки для *.csv
             string upstring = "";
 
-            //Чтение из файла
-            for (int i = 5; i <= rows; i++)
+            try
             {
-                for (int j = 1; j <= cols; j++)
+                //Чтение из файла
+                for (int i = 5; i <= rows; i++)
                 {
-                    //Проверяем непустые ячейки
-                    if (excelRange.Cells[i, j] != null && excelRange.Cells[i, j].Value2 != null)
+                    for (int j = 1; j <= cols; j++)
                     {
-                        //Добавление в строку данных
-                        upstring = upstring + excelRange.Cells[i, j].Value2.ToString() + del;
+                        //Проверяем непустые ячейки
+                        if (excelRange.Cells[i, j] != null && excelRange.Cells[i, j].Value2 != null)
+                        {
+                            //Вписываем подзаголовки на свои места
+                            if (excelRange.Cells[i, 1].Value2 == null && excelRange.Cells[i, 2].Value2 != null)
+                            {
+                                upstring = upstring + del;
+                            }
+                            //Добавление в строку данных
+                            upstring = upstring + excelRange.Cells[i, j].Value2.ToString() + del;
+                        }
                     }
+
+                    //Проверяем подразделения и владельцев процессов - объединенные ячейки съезжают на следующую строку, присоединяем их обратно в нужную строку
+                    try
+                    {
+                        excelRange.Cells[i + 1, 2].Value2.ToString();
+                        upstring = upstring + del + Environment.NewLine;
+                        File.AppendAllText(pathcsv, upstring, Encoding.GetEncoding(1251));
+                        upstring = "";
+
+                        //log("Строка добавлена в файл " + pathcsv);
+                    }
+                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
+
                 }
-
-                //Проверяем подразделения и владельцев процессов - объединенные ячейки съезжают на следующую строку, присоединяем их обратно в нужную строку
-                try
-                {
-                    excelRange.Cells[i + 1, 2].Value2.ToString();
-                    upstring = upstring + del + Environment.NewLine;
-                    File.AppendAllText(pathcsv, upstring, Encoding.GetEncoding(1251));
-                    upstring = "";
-
-                    //log("Строка добавлена в файл " + pathcsv);
-                }
-                catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
-
             }
+            catch(Exception ex)
+            {
+                log_ex(ex, "Построчное чтение из файла");
+            }
+            
             //Выход из Excel
             excelApp.Quit();
             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
@@ -199,8 +205,7 @@ namespace Excel2DB
                         //str[1] - Наименование процесса
                         //str[2] и далее - подразделения и владельцы процесса
 
-                        //Отсеиваем подзаголовки таблицы
-                        if (str[1] != "")
+
                             //Отсеиваем пустые ячейки
                             if (str[i] != "")
                                 //Разбираем ячейки по переменным для вставки в запрос INSERT
@@ -303,7 +308,9 @@ namespace Excel2DB
                     }
                     catch(System.ArgumentOutOfRangeException)
                     {
-                        //Ошибка из-за того, что в эту таблицу нечего записать из соответствующей строки
+                        //Ошибка из-за того, что в эту таблицу нечего записать из соответствующей строки. Поэтому в первую колонку ставим 'NULL'
+                        string query = "INSERT " + db + "." + table3 + "(retail) VALUES (NULL)";
+                        auto_query(query, connection);
                     }
                     catch(Exception ex)
                     {
@@ -389,8 +396,8 @@ namespace Excel2DB
             string db = "test", table1 = "main", table2 = "process", table3 = "owners";
 
             exceltocsv(path, pathcsv, del);
-            db_structure(db, table1, table2, table3);
-            db_insert(pathcsv, del, db, table1, table2, table3);
+            //db_structure(db, table1, table2, table3);
+            //db_insert(pathcsv, del, db, table1, table2, table3);
 
             log("Работа программы окончена");
             Console.ReadLine();
