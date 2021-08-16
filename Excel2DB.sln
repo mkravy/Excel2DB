@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31605.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excel2DB", "Excel2DB.csproj", "{663E1460-8AF2-4852-AEC4-6962EFBA451D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{663E1460-8AF2-4852-AEC4-6962EFBA451D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{663E1460-8AF2-4852-AEC4-6962EFBA451D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{663E1460-8AF2-4852-AEC4-6962EFBA451D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{663E1460-8AF2-4852-AEC4-6962EFBA451D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB72D87E-688F-4345-90B7-D1B5C7506985}
+	EndGlobalSection
+EndGlobal
