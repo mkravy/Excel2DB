@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Excel2DB
 {
-    class Program
+    class Excel2DB
     {
         private static string query;
 
@@ -110,14 +110,6 @@ namespace Excel2DB
             }
 
             //Запросы
-            try
-            {
-                //Дропаем таблицу (для теста)
-                query = "DROP DATABASE IF EXISTS " + db;
-                auto_query(query, connection);
-            }
-            catch { }
-
             try
             {
                 //Создали базу 'test', если не существует
@@ -396,8 +388,8 @@ namespace Excel2DB
             string db = "test", table1 = "main", table2 = "process", table3 = "owners";
 
             exceltocsv(path, pathcsv, del);
-            //db_structure(db, table1, table2, table3);
-            //db_insert(pathcsv, del, db, table1, table2, table3);
+            db_structure(db, table1, table2, table3);
+            db_insert(pathcsv, del, db, table1, table2, table3);
 
             log("Работа программы окончена");
             Console.ReadLine();
