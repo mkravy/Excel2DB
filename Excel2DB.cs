@@ -357,7 +357,6 @@ namespace Excel2DB
             File.AppendAllText(log_file, log_string, Encoding.GetEncoding(1251));
         }
 
-
         static void log_query(Exception ex, string log_text, string query)
         {
             //Кроме ошибки выводит сам запрос
@@ -366,6 +365,7 @@ namespace Excel2DB
             Console.Write(log_string);
             File.AppendAllText(log_file, log_string, Encoding.GetEncoding(1251));
         }
+
         static void Main(string[] args)
         {
             string log_file = "C:\\Users\\micha\\Desktop\\Энергосбыт\\log.txt";
